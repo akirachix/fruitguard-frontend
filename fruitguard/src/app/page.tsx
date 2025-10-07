@@ -41,7 +41,7 @@ export default function Splash() {
                     </h1>
 
                     <p className="text-white text-xl sm:text-2xl md:text-3xl mb-8 px-2 sm:px-6 md:px-8 max-w-1xl leading-relaxed line-clamp-2">
-                        Monitor trap fill status and receive real-time alerts with FruitGuard's advanced IoT technology.
+                        Monitor trap fill status and receive real-time alerts with FruitGuards advanced IoT technology.
                     </p>
 
                     <Link href="/roles" className="w-full sm:w-auto">

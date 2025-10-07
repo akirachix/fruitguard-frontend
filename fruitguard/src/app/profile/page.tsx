@@ -4,12 +4,17 @@ import { useEffect,useState } from "react";
 import useProfile from "../hooks/useFetchProfile";
 import { updateProfile } from "../utils/updateProfile";
 import { HiOutlinePencilAlt } from "react-icons/hi";
-import AdminLayout from "../sharedComponents/AdminLayout";
 import Button from "../sharedComponents/Button";
 
-const token = process.env.NEXT_PUBLIC_API_TOKEN || "";
 
-export default function profile() {
+export default function Profile() {
+  const [token,setToken]=useState("")
+  useEffect(()=>{
+    const storedToken =localStorage.getItem("token");
+    if (storedToken){
+      setToken(storedToken);
+    }
+  },[]);
   const {profile, loading, error } = useProfile(token);
   const [formData, setFormData] = useState({first_name: "", last_name: "", email: "",});
   const [profileImage, setProfileImage] = useState<File |null>(null);
@@ -17,7 +22,6 @@ export default function profile() {
   const [updating, setUpdating] = useState(false);
   const [updateError, setUpdateError] = useState<string |null>(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
-
 
   useEffect(() => {
     if (profile) {setFormData({ first_name: profile.first_name ?? "", last_name: profile.last_name ?? "", email: profile.email ?? "",});
@@ -29,6 +33,10 @@ export default function profile() {
    setFormData((oldData) => ({...oldData,[name]: value }));}
 
   async function handleSubmit(event: React.FormEvent) {event.preventDefault();
+    if (!token){
+      setUpdateError("No authorization token found")
+      return;
+    }
     setUpdating(true);
     setUpdateError(null);
     setUpdateSuccess(false);
@@ -65,7 +73,7 @@ export default function profile() {
   }}, [updateSuccess]);
 
   return (
-    <AdminLayout>
+   
     <div className="flex justify-end min-h-screen">
         <main className="w-4/5 px-35 flex flex-col justify-center items-center ml-30 font-nunito">
           <h1 className="text-[#7B4F36] text-2xl lg:text-3xl xl:text-3xl 2xl:text-4xl font-bold mb-15 -mt-4 text-left w-full">Profile</h1>
@@ -76,7 +84,7 @@ export default function profile() {
             <div className="flex flex-col md:flex-row gap-12 items-start w-full max-w-5xl">
                 <div className="flex flex-col items-center md:items-start md:w-1/3 w-full">
                   <div className="relative inline-block">
-                    <img src={previewImage || "/default-profile.png"} alt="Profile photo" className="rounded-full w-40 h-40 border-4 border-[#F5DBBC] object-cover"/>
+                    <img src={previewImage || "/default-profile.png"} alt="Profile photo" width={160} height={160} className="rounded-full w-40 h-40 border-4 border-[#F5DBBC] object-cover"/>
                       <label htmlFor="profileImageInput" className="absolute bottom-0 right-0 bg-[#F5DBBC] rounded-full p-2 cursor-pointer"title="Edit profile image">
                         <HiOutlinePencilAlt className="h-6 w-6 text-yellow-500" />
                       </label>
@@ -110,6 +118,5 @@ export default function profile() {
               </div>)}
        </main>
      </div>
-     </AdminLayout>
   );
 }

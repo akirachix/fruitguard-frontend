@@ -20,7 +20,7 @@ export default function AdminSidebar() {
 
     { id: "home", label: "Home", icon: HomeIcon, href: "/home" },
     { id: "team", label: "Manage Team", icon: ChartBarIcon, href: "/team" },
-    { id: "profile", label: "Profile", icon: UserIcon, href: "/profile" },
+    { id: "profile", label: "Profile", icon: UserIcon, href: "/admin-profile" },
   ];
 
   const handleLogoutProceed = () => {

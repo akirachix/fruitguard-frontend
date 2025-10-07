@@ -7,33 +7,34 @@ jest.mock("next/navigation", () => ({
 }));
 
 describe("AgrovetSidebar", () => {
-  beforeEach(() => {
-    (usePathname as jest.Mock).mockReset();
-    });
-  test("renders sidebar with navigation items and logout button", () => {
-    (usePathname as jest.Mock).mockReturnValue("/");
-    render(<AgrovetSidebar />);
+  const mockUsePathname = usePathname as jest.Mock;
 
+  beforeEach(() => {
+    mockUsePathname.mockReset();
+  });
+
+  test("renders sidebar with navigation items and logout button", () => {
+    mockUsePathname.mockReturnValue("/farmer-registration");
+    render(<AgrovetSidebar />);
 
     expect(screen.getByAltText("FruitGuard logo")).toBeInTheDocument();
     expect(screen.getByText("FruitGuard")).toBeInTheDocument();
-    expect(screen.getByText("Home")).toBeInTheDocument();
-    expect(screen.getByText("Profile")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Profile" })).toBeInTheDocument();
     expect(screen.getByText("Log out")).toBeInTheDocument();
   });
 
   test("clicking navigation links changes active state", () => {
-    (usePathname as jest.Mock).mockReturnValue("/");
+    mockUsePathname.mockReturnValue("/farmer-registration");
     const { rerender } = render(<AgrovetSidebar />);
 
-    const homeLink = screen.getByText("Home").closest("a");
-    const profileLink = screen.getByText("Profile").closest("a");
+    const homeLink = screen.getByRole("link", { name: "Home" });
+    const profileLink = screen.getByRole("link", { name: "Profile" });
 
- 
     expect(homeLink).toHaveAttribute("aria-current", "page");
     expect(profileLink).not.toHaveAttribute("aria-current");
 
-    (usePathname as jest.Mock).mockReturnValue("/profile");
+    mockUsePathname.mockReturnValue("/agrovet-profile");
     rerender(<AgrovetSidebar />);
 
     expect(profileLink).toHaveAttribute("aria-current", "page");
@@ -41,12 +42,11 @@ describe("AgrovetSidebar", () => {
   });
 
   test("clicking logout shows confirmation modal", () => {
-     (usePathname as jest.Mock).mockReturnValue("/");
-     render(<AgrovetSidebar />);
+    mockUsePathname.mockReturnValue("/farmer-registration");
+    render(<AgrovetSidebar />);
 
-    expect(screen.queryByText("Do you want to logout?")).toBeNull();
+    expect(screen.queryByText("Do you want to logout?")).not.toBeInTheDocument();
 
- 
     fireEvent.click(screen.getByText("Log out"));
     expect(screen.getByText("Do you want to logout?")).toBeInTheDocument();
     expect(screen.getByText("Cancel")).toBeInTheDocument();
@@ -54,22 +54,22 @@ describe("AgrovetSidebar", () => {
   });
 
   test("clicking cancel hides the logout confirmation modal", () => {
-    (usePathname as jest.Mock).mockReturnValue("/");
-    render(<AgrovetSidebar />); 
+    mockUsePathname.mockReturnValue("/farmer-registration");
+    render(<AgrovetSidebar />);
 
     fireEvent.click(screen.getByText("Log out"));
     fireEvent.click(screen.getByText("Cancel"));
 
-    expect(screen.queryByText("Do you want to logout?")).toBeNull();
+    expect(screen.queryByText("Do you want to logout?")).not.toBeInTheDocument();
   });
 
-  test("proceed button links to /login", () => {
-    (usePathname as jest.Mock).mockReturnValue("/");
-     render(<AgrovetSidebar />);
+  test("proceed button links to /Login", () => {
+    mockUsePathname.mockReturnValue("/farmer-registration");
+    render(<AgrovetSidebar />);
 
     fireEvent.click(screen.getByText("Log out"));
 
     const proceedLink = screen.getByRole("link", { name: "Proceed" });
-    expect(proceedLink).toHaveAttribute("href", "/login");
+    expect(proceedLink).toHaveAttribute("href", "/Login");
   });
 });

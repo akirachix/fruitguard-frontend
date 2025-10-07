@@ -15,8 +15,8 @@ export default function AgrovetSidebar() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
   const navItems = [
-    { id: "home", label: "Home", icon: HomeIcon, href: "/dashboard" },
-    { id: "profile", label: "Profile", icon: UserIcon, href: "/profile" },
+    { id: "home", label: "Home", icon: HomeIcon, href: "/farmer-registration" },
+    { id: "profile", label: "Profile", icon: UserIcon, href: "/agrovet-profile" },
   ];
 
   const handleLogoutProceed = () => {

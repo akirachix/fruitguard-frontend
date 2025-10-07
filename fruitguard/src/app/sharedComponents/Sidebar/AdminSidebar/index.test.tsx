@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 describe("AdminSidebar", () => {
   const mockUsePathname = usePathname as jest.Mock;
   beforeEach(() => {
-    mockUsePathname.mockReturnValue("/");
+    mockUsePathname.mockReturnValue("/home");
   });
   test("renders sidebar with nav items and logout button", () => {
     render(<AdminSidebar />);
@@ -20,21 +20,22 @@ describe("AdminSidebar", () => {
   });
 
 
-  test("navigation links reflect active based on mocked pathname", () => {
+test("navigation links reflect active based on mocked pathname", () => {
   const { rerender } = render(<AdminSidebar />);
 
-  let homeLink = screen.getByText("Home").closest("a");
+  const homeLink = screen.getByText("Home").closest("a");
   expect(homeLink).toHaveAttribute("aria-current", "page");
 
   mockUsePathname.mockReturnValue("/team");
   rerender(<AdminSidebar />);
-  let teamLink = screen.getByText("Manage Team").closest("a");
+  const teamLink = screen.getByText("Manage Team").closest("a");
   expect(teamLink).toHaveAttribute("aria-current", "page");
 
-  mockUsePathname.mockReturnValue("/profile");
+  mockUsePathname.mockReturnValue("/admin-profile");
   rerender(<AdminSidebar />);
-  let profileLink = screen.getByText("Profile").closest("a");
+  const profileLink = screen.getByText("Profile").closest("a");
   expect(profileLink).toHaveAttribute("aria-current", "page");
+});
 });
 
 
@@ -56,11 +57,11 @@ describe("AdminSidebar", () => {
     expect(screen.queryByText("Do you want to logout?")).toBeNull();
   });
 
-  test("proceed button links to /login", () => {
+  test("proceed button links to /Login", () => {
     render(<AdminSidebar />);
     fireEvent.click(screen.getByText("Log out"));
 
     const proceedLink = screen.getByRole("link", { name: "Proceed" });
-    expect(proceedLink).toHaveAttribute("href", "/login");
+    expect(proceedLink).toHaveAttribute("href", "/Login");
   });
-});
+

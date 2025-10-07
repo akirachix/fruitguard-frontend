@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react"; 
 import HomePage from "./page";
 
 jest.mock("react-icons/fi", () => ({
@@ -13,9 +13,8 @@ jest.mock("../hooks/useFetchDevices", () => ({
   useFetchDevices: jest.fn(),
 }));
 
-const { useFetchAgrovets } = require("../hooks/useFetchAgrovets");
-const { useFetchDevices } = require("../hooks/useFetchDevices");
-
+import * as useFetchAgrovetsModule from "../hooks/useFetchAgrovets";
+import * as useFetchDevicesModule from "../hooks/useFetchDevices";
 
 const mockAgrovets = [
   { id: 1, name: "Mary Agrovet", location: "Nairobi", phone: "12345" },
@@ -46,21 +45,20 @@ beforeEach(() => {
 });
 
 function setupAgrovetHook(props = {}) {
-  (useFetchAgrovets as jest.Mock).mockReturnValue({
+  (useFetchAgrovetsModule.useFetchAgrovets as jest.Mock).mockReturnValue({
     ...defaultAgrovetsProps,
     ...props,
   });
 }
+
 function setupDevicesHook(props = {}) {
-  (useFetchDevices as jest.Mock).mockReturnValue({
+  (useFetchDevicesModule.useFetchDevices as jest.Mock).mockReturnValue({
     ...defaultDevicesProps,
     ...props,
   });
 }
 
 describe("HomePage", () => {
-  
-
   it("renders stats cards correctly", () => {
     setupAgrovetHook();
     setupDevicesHook();
@@ -71,6 +69,7 @@ describe("HomePage", () => {
     expect(screen.getByText("Number of agrovets")).toBeInTheDocument();
     expect(screen.getByText(defaultAgrovetsProps.agrovetsCount)).toBeInTheDocument();
   });
+
   it("table headers render correctly", () => {
     setupAgrovetHook();
     setupDevicesHook();
@@ -81,25 +80,25 @@ describe("HomePage", () => {
     expect(screen.getByText("Location")).toBeInTheDocument();
     expect(screen.getByText("Phone No")).toBeInTheDocument();
   });
-  
+
   it("renders agrovet table with data (first page)", () => {
     setupAgrovetHook();
     setupDevicesHook();
 
     render(<HomePage />);
-    
+
     mockAgrovets.slice(0, 6).forEach((agrovet) => {
       expect(screen.getByText(agrovet.name)).toBeInTheDocument();
       expect(screen.getByText(agrovet.location)).toBeInTheDocument();
       expect(screen.getByText(agrovet.phone)).toBeInTheDocument();
       expect(screen.getByText(agrovet.id)).toBeInTheDocument();
     });
-  
+
     expect(screen.queryByText("Quality Agrovets")).not.toBeInTheDocument();
     expect(screen.queryByText("Agro Plus")).not.toBeInTheDocument();
   });
 
-  it("pagination works next/previous", async () => {
+  it("pagination works next/previous", () => {
     setupAgrovetHook();
     setupDevicesHook();
 
@@ -160,6 +159,4 @@ describe("HomePage", () => {
     fireEvent.change(input, { target: { value: "notfound" } });
     expect(screen.getByText(/No agrovet manager found with that name/)).toBeInTheDocument();
   });
-
-
 });

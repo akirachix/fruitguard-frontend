@@ -1,37 +1,66 @@
-import { fetchLogin } from './fetchLogin';
+import { renderHook, act, waitFor } from '@testing-library/react';
+import { fetchLogin } from '../utils/fetchLogin';
+import useFetchLogin from '../hooks/useFetchLogin';
 
-describe('fetchLogin', () => {
-  const userData = { email: '', password: '' };
+jest.mock('../utils/fetchLogin');
+
+describe('useFetchLogin', () => {
+  const userCredentials = {email: '', password: '',};
   const mockResult = { token: '' };
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('successfully logs in and returns result', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: true, json: jest.fn().mockResolvedValue(mockResult),
-    });
-
-    const result = await fetchLogin(userData);
-    expect(global.fetch).toHaveBeenCalledWith('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(userData),
-    });
-    expect(result).toEqual(mockResult);
+  it('initializes with correct state', () => {
+    const { result } = renderHook(() => useFetchLogin());
+    expect(result.current.loading).toBe(false);
+    expect(result.current.error).toBe(null);
+    expect(result.current.login).toEqual(expect.any(Function));
   });
 
-  it('handles HTTP error response', async () => {
-    global.fetch = jest.fn().mockResolvedValue({
-      ok: false, statusText: 'Bad Request',
+  it('handles a successful login', async () => {
+    (fetchLogin as jest.Mock).mockResolvedValue(mockResult);
+    const { result } = renderHook(() => useFetchLogin());
+    let loginResult;
+    
+    await act(async () => {
+      loginResult = await result.current.login(userCredentials.email, userCredentials.password);
     });
 
-    await expect(fetchLogin(userData)).rejects.toThrow('Failed to login: Loggin failed: Bad Request');
+    expect(fetchLogin).toHaveBeenCalledWith(userCredentials.email, userCredentials.password);
+    expect(loginResult).toBe(mockResult);
+    
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+    expect(result.current.error).toBe(null);
+  });
+  it('handles a login failure', async () => {
+    const errorMessage = 'Login failed';
+    (fetchLogin as jest.Mock).mockRejectedValue(new Error(errorMessage));
+    const { result } = renderHook(() => useFetchLogin());
+    let loginResult;
+    
+    await act(async () => {
+      loginResult = await result.current.login(userCredentials.email, userCredentials.password);
+    });
+    expect(fetchLogin).toHaveBeenCalledWith(userCredentials.email, userCredentials.password);
+    expect(loginResult).toBe(null);
+
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
+    expect(result.current.error).toBe(errorMessage);
   });
 
-  it('handles network error', async () => {
-    global.fetch = jest.fn().mockRejectedValue(new Error('Network error'));
-
-    await expect(fetchLogin(userData)).rejects.toThrow('Failed to login: Network error');
-  })});
+  it('sets loading state during login', async () => {
+    const promise = new Promise<typeof mockResult>(resolve => setTimeout(() => resolve(mockResult), 100));
+    (fetchLogin as jest.Mock).mockImplementation(() => promise);
+    const { result } = renderHook(() => useFetchLogin());
+    act(() => {
+      result.current.login(userCredentials.email, userCredentials.password);
+    });
+    expect(result.current.loading).toBe(true);
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    })})});

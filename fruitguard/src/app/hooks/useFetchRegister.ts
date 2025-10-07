@@ -1,9 +1,8 @@
 'use client';
-
 import { useState } from 'react';
 import { fetchRegister } from '../utils/fetchRegister';
 
-interface UserType {id: number, firstName: string; lastName: string; email: string; password: string;}
+interface UserType {id: number, first_name: string; last_name: string; email: string; user_type:string;phone_number: string; password: string;}
 const useFetchRegister = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);

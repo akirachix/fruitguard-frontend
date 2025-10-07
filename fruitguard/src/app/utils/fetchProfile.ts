@@ -7,13 +7,11 @@ export async function fetchProfile(token: string) {
       headers: {
         Authorization: `Token ${token}`,
         Accept: "application/json",
-      },
-    });
+      },});
     if (!response.ok) {
        throw new Error(`Failed to fetch profile: ${response.statusText}`);
     }
     return response.json();
    } catch (error) {
    throw new Error("Something went wrong while fetching the profile: " + (error as Error).message);
-  }
-}
+  }}

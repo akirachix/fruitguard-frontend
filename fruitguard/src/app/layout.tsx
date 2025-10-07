@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import {Nunito } from "next/font/google";
 import "./globals.css";
-import AdminSidebar from "./sharedComponents/Sidebar/AdminSidebar";
 
 const nunito = Nunito({
   subsets: ["latin"],
@@ -25,8 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${nunito.variable} font-nunito`}
-      >
+        className={`${nunito.variable} font-nunito`}>
         {children}
       </body>
     </html>

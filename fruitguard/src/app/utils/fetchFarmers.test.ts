@@ -1,6 +1,6 @@
 import { fetchFarmers } from "./fetchFarmers"; 
 
-const baseUrl = 'api/users';
+const baseUrl = 'api/user';
 
 describe('fetchFarmers', () => {
   beforeEach(() => {
@@ -51,6 +51,4 @@ describe('fetchFarmers', () => {
 
     await expect(fetchFarmers()).rejects.toThrow(
       'Something went wrong while loading the farmers list: Network Error'
-    );
-  });
-});
+    )})});

@@ -1,11 +1,10 @@
 import { renderHook, act } from "@testing-library/react";
 import { useFetchAgrovets } from "./useFetchAgrovets";
-
+import { fetchAgrovets } from "../utils/fetchAgrovets"; 
 
 jest.mock("../utils/fetchAgrovets", () => ({
   fetchAgrovets: jest.fn(),
 }));
-const { fetchAgrovets } = require("../utils/fetchAgrovets");
 
 const mockAgrovetApiResult = [
   {
@@ -44,8 +43,6 @@ describe("useFetchAgrovets", () => {
     (fetchAgrovets as jest.Mock).mockResolvedValue(mockAgrovetApiResult);
 
     const { result } = renderHook(() => useFetchAgrovets());
-
-
     await act(async () => {
       await Promise.resolve();
     });

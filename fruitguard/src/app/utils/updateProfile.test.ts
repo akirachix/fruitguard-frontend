@@ -1,4 +1,3 @@
-import { headers } from "next/headers";
 import { updateProfile } from "./updateProfile";
 
 const baseUrl = 'api/updateprofile';
@@ -42,7 +41,5 @@ describe('updateProfile', () => {
 
         await expect(updateProfile(token, mockFormData)).rejects.toThrow("Something went wrong while updating the profile: Network failure");
     });
-
-    
 });
 

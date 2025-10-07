@@ -14,3 +14,6 @@ export async function fetchRegister(userData: object) {
   } catch (error) {
     throw new Error("Failed to register: " + (error as Error).message);
   }}
+
+
+

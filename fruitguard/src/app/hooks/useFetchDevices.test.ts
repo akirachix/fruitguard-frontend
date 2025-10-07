@@ -1,11 +1,11 @@
 import { renderHook, act } from "@testing-library/react";
 import { useFetchDevices } from "./useFetchDevices";
-
+import { fetchDevices } from "../utils/fetchDevices";
 
 jest.mock("../utils/fetchDevices", () => ({
   fetchDevices: jest.fn(),
 }));
-const { fetchDevices } = require("../utils/fetchDevices");
+
 
 const mockDevices = [
   { id: 1, name: "Trap 1", status: "active" },

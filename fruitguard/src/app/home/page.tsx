@@ -1,4 +1,3 @@
-
 "use client";
 import { useState } from "react";
 import { useFetchAgrovets } from "../hooks/useFetchAgrovets";
@@ -10,16 +9,12 @@ import { FiSearch } from "react-icons/fi";
 import AdminLayout from "../sharedComponents/AdminLayout";
 
 export default function HomePage() {
-  const { agrovets, agrovetsCount, loading: agrovetsLoading, error: agrovetsError } = useFetchAgrovets();
-  const { trapsCount, loading: devicesLoading, error: devicesError } = useFetchDevices();
+const { agrovets, agrovetsCount } = useFetchAgrovets();
+const { trapsCount } = useFetchDevices();
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [itemsPerPage] = useState(6);
-
-  const loading = agrovetsLoading || devicesLoading;
-  const error = agrovetsError || devicesError;
-
   const filteredAgrovets = agrovets.filter((m: Agrovet) =>
     m.name.toLowerCase().includes(search.toLowerCase())
   );

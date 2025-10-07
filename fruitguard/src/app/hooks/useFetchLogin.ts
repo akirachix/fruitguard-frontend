@@ -1,28 +1,22 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { fetchLogin } from '../utils/fetchLogin';
+import { useState } from "react";
+import { fetchLogin } from "../utils/fetchLogin";
 
-interface UserType {id: number; email: string; password: string;}
-const useFetchLogin = () => {
+export default function useFetchLogin() {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  const login = async (userData: UserType) => {
+  async function login(email: string, password: string) {
     setLoading(true);
     setError(null);
     try {
-      const result = await fetchLogin(userData);
-      if (!result) {
-        throw new Error('Login failed');
-      }
+      const result = await fetchLogin(email, password);
+      setLoading(false);
       return result;
     } catch (error) {
       setError((error as Error).message);
-      return null;
-    } finally {
       setLoading(false);
-    }};
+      return null;
+    }}
   return { login, loading, error };
-};
-export default useFetchLogin;
+}
